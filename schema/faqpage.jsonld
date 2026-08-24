@@ -1,0 +1,23 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "{{URL_TRANG}}#faq",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "{{CAU_HOI_1_VD_Ke_Selective_la_gi}}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{TRA_LOI_40_60_TU_TRA_LOI_THANG_KHONG_VONG_VO}}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{{CAU_HOI_2}}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{TRA_LOI_40_60_TU}}"
+      }
+    }
+  ]
+}

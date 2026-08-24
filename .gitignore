@@ -1,0 +1,6 @@
+# Báo cáo quét và bản sao lưu sinh ra mỗi phiên — không đưa vào git
+reports/*
+!reports/.gitkeep
+backups/
+__pycache__/
+*.pyc
