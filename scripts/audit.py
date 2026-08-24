@@ -56,6 +56,36 @@ def fetch(url, method="GET"):
         return 0, {}, str(e).encode("utf-8", "replace"), url
 
 
+CHALLENGE_MARKERS = (
+    "/.well-known/sgcaptcha/",     # SiteGround Anti-Bot AI
+    "__cf_chl",                    # Cloudflare challenge
+    "/cdn-cgi/challenge-platform", # Cloudflare turnstile
+)
+
+
+def detect_challenge(status, headers, body):
+    """
+    Nhan dien trang chong bot (CAPTCHA / challenge).
+
+    KHONG duoc tin vao mot minh ma HTTP: SiteGround tra ve ca 200 lan 202 cho
+    cung mot trang challenge 169 byte. Phai kiem tra header va noi dung.
+
+    Tra ve chuoi mo ta neu la trang challenge, None neu la noi dung that.
+    """
+    if headers.get("sg-captcha"):
+        return f"SiteGround Anti-Bot (sg-captcha: {headers['sg-captcha']})"
+    if headers.get("cf-mitigated"):
+        return f"Cloudflare challenge (cf-mitigated: {headers['cf-mitigated']})"
+    text = body[:4000].decode("utf-8", "replace").lower()
+    for marker in CHALLENGE_MARKERS:
+        if marker.lower() in text:
+            return f"trang challenge chong bot (dau hieu: {marker})"
+    # trang cuc ngan chi chua meta refresh -> gan nhu chac chan la challenge
+    if len(body) < 600 and "http-equiv=\"refresh\"" in text.replace("'", '"'):
+        return "trang chuyen huong rat ngan, nghi la challenge chong bot"
+    return None
+
+
 class PageParser(HTMLParser):
     """Rut trich cac tin hieu SEO tu HTML."""
 
@@ -238,6 +268,12 @@ def audit_page(url, base_host):
     if status != 200:
         flag("critical", "http_error", f"HTTP {status}")
         return rec
+    challenge = detect_challenge(status, headers, body)
+    if challenge:
+        flag("critical", "bot_challenge", f"Bi chan boi {challenge}")
+        rec["challenge"] = challenge
+        return rec
+
     ctype = (headers.get("content-type") or "").lower()
     if "html" not in ctype:
         rec["skipped"] = f"khong phai HTML ({ctype})"
@@ -378,11 +414,41 @@ def main():
     ap.add_argument("--max-links", type=int, default=200, help="So link toi da can kiem tra")
     ap.add_argument("--check-images", action="store_true", help="Kiem tra dung luong anh (cham)")
     ap.add_argument("--delay", type=float, default=0.5, help="Nghi giua cac request (giay)")
+    ap.add_argument("--force", action="store_true",
+                    help="Van quet du phat hien bi chan chong bot (bao cao se khong dang tin)")
     args = ap.parse_args()
 
     base = args.base.rstrip("/")
     base_host = urlparse(base).netloc
     os.makedirs(args.out, exist_ok=True)
+
+    print(f"[0/5] Kiem tra co bi chan chong bot khong ...", file=sys.stderr)
+    st0, hd0, body0, _ = fetch(base + "/")
+    ch = detect_challenge(st0, hd0, body0)
+    if ch and not args.force:
+        print(f"""
+DUNG LAI - khong quet duoc.
+
+  {base} tra ve HTTP {st0} nhung noi dung la {ch}.
+
+Trinh quet se sinh ra bao cao SAI neu chay tiep, vi no se doc trang challenge
+{len(body0)} byte thay vi noi dung that cua site.
+
+Luu y: KHONG duoc tin vao ma HTTP. SiteGround tra ve ca 200 lan 202 cho cung
+mot trang challenge - phai kiem tra header sg-captcha hoac noi dung.
+
+Cach xu ly:
+  * Chay lai tu mot mang khac (mang nha, 4G dien thoai)
+  * Hoac them IP cua may vao danh sach tin cay trong SiteGround Site Tools
+  * Hoac tam tat Anti-Bot AI trong luc quet
+
+Neu van muon chay de xem ket qua tho, them --force.
+""", file=sys.stderr)
+        return 2
+    if ch:
+        print(f"      CANH BAO: {ch} - van chay vi co --force", file=sys.stderr)
+    else:
+        print(f"      OK - noi dung that ({len(body0)} byte)", file=sys.stderr)
 
     print(f"[1/5] Kiem tra robots.txt va sitemap.xml tren {base} ...", file=sys.stderr)
     infra = {}

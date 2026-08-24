@@ -62,16 +62,26 @@ python3 scripts/audit.py --base https://giakelongquyen.com --out reports/ --max-
 
 ### Nếu máy anh cũng bị chặn CAPTCHA
 
-Chạy lệnh này để kiểm tra:
+**Không được chỉ nhìn mã HTTP.** SiteGround trả về cả `200` lẫn `202` cho cùng
+một trang CAPTCHA — đã gặp thực tế: cùng một URL, request này `202`, request
+sau `200`, nhưng cả hai đều trả về đúng trang challenge 169 byte đó. Nhìn mã
+HTTP thôi sẽ báo xanh nhầm.
+
+Lệnh kiểm tra đúng — xem **header** và **dung lượng**:
 
 ```bash
-curl -sS -o /dev/null -w "%{http_code}\n" https://giakelongquyen.com/
+curl -sS -D - -o /dev/null https://giakelongquyen.com/ | grep -iE "sg-captcha|content-length"
 ```
 
-- Trả về `200` → tốt, chạy quét được
-- Trả về `202` → IP của anh cũng đang bị SiteGround chặn. Thử từ mạng khác (4G
-  điện thoại chẳng hạn), hoặc vào Site Tools của SiteGround thêm IP của anh vào
-  danh sách tin cậy
+- Không thấy dòng `sg-captcha` nào → tốt, chạy quét được
+- Thấy `sg-captcha: challenge` → IP của anh đang bị chặn
+
+Cách xử lý khi bị chặn: thử từ mạng khác (4G điện thoại chẳng hạn), hoặc vào
+Site Tools của SiteGround thêm IP của anh vào danh sách tin cậy.
+
+Anh cũng không cần nhớ lệnh trên — **trình quét tự kiểm tra trước khi chạy**.
+Nếu phát hiện bị chặn, nó dừng lại ngay và báo rõ, thay vì sinh ra một báo cáo
+sai đầy lỗi giả (vì nó sẽ đọc trang CAPTCHA 169 byte thay vì nội dung thật).
 
 ## Gửi báo cáo cho em
 
