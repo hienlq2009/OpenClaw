@@ -89,13 +89,45 @@ python3 scripts/audit.py --base https://giakelongquyen.com --out reports/ --chec
 Bước 1 trả về `200`, bước 2 in ra tên người dùng và danh sách quyền, bước 3
 sinh được báo cáo trong `reports/` là đã thông cả hai lớp.
 
+## Chặn 3 — SiteGround chặn IP trung tâm dữ liệu bằng CAPTCHA
+
+Sau khi gỡ xong hai lớp trên, mọi request tới site đều trả về một trang 169 byte:
+
+```
+HTTP/2 202
+sg-captcha: challenge
+x-sg-cdn: 1
+x-robots-tag: noindex
+
+<meta http-equiv="refresh" content="0;/.well-known/sgcaptcha/?r=%2F&y=ipc:160.79.106.137...">
+```
+
+Anti-Bot AI của SiteGround chặn IP trung tâm dữ liệu. Đã kiểm tra và loại trừ:
+
+| Thử nghiệm | Kết quả |
+|---|---|
+| User-Agent Chrome thật | vẫn `202`, vẫn CAPTCHA |
+| `robots.txt`, `sitemap.xml`, `/wp-json/` | cả ba đều bị chặn |
+| REST API có xác thực | bị chặn *trước* bước xác thực |
+| Theo redirect kèm cookie jar | không đi được — `meta refresh` cần JavaScript |
+
+IP của phiên **không cố định**: hai request cách nhau 30 giây cho hai IP khác
+nhau (`160.79.106.137` rồi `160.79.106.133`). Whitelist một IP đơn lẻ sẽ hỏng
+ngay ở phiên sau.
+
+### Cách xử lý — đã chọn
+
+**Chạy quét tại máy người dùng.** Trình quét chỉ dùng thư viện chuẩn Python nên
+chạy được ở bất cứ đâu; IP nhà mạng Việt Nam không bị chặn. Xem
+`docs/CHAY-TAI-MAY.md`.
+
+Hai cách còn lại đã cân nhắc và không chọn: tắt Anti-Bot AI (hạ thấp bảo mật
+site) hoặc whitelist dải IP (không bền vì IP xoay theo pool).
+
 ## Trạng thái ngày 2026-08-24
 
 | Lớp chặn | Trạng thái |
 |---|---|
-| Quyền ghi WordPress | **đã gỡ** — có Application Password cho `LongQuyenAuto` |
-| Tường lửa mạng | **còn chặn** — proxy trả `Tunnel connection failed: 403 Forbidden` |
-
-Đã thử kết nối thật lúc 12:57 với credential hợp lệ, vẫn bị chặn ở tầng CONNECT.
-Chặn mạng nằm ở chính sách môi trường, không liên quan tới xác thực — chỉ quản
-trị viên môi trường mới gỡ được. Đây là việc duy nhất còn lại.
+| Quyền ghi WordPress | ✅ đã gỡ — Application Password cho `LongQuyenAuto` |
+| Tường lửa mạng môi trường | ✅ đã gỡ — allowlist `giakelongquyen.com` |
+| Chống bot SiteGround | ⚠️ còn — xử lý bằng cách chạy quét tại máy người dùng |

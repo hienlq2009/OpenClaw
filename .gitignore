@@ -1,6 +1,5 @@
-# Báo cáo quét và bản sao lưu sinh ra mỗi phiên — không đưa vào git
-reports/*
-!reports/.gitkeep
+# Bản sao lưu nội dung site — có thể rất nặng, không đưa vào git
 backups/
+
 __pycache__/
 *.pyc
