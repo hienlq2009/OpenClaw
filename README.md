@@ -9,6 +9,7 @@ Thương mại Long Quyền, nhà sản xuất giá kệ kho hàng công nghiệ
 | Đường dẫn | Mục đích |
 |---|---|
 | `scripts/audit.py` | Trình quét SEO/AEO, chỉ dùng thư viện chuẩn Python |
+| `scripts/wp.py` | Client WordPress REST API để sửa lỗi an toàn (chạy thử mặc định, tự sao lưu, hoàn tác được) |
 | `docs/RUNBOOK.md` | Quy trình vận hành 5 bước hàng ngày |
 | `docs/ACCESS.md` | Cách gỡ hai lớp chặn truy cập (bắt buộc đọc trước) |
 | `docs/entity-profile.md` | Nguồn dữ liệu chuẩn về doanh nghiệp (E-E-A-T) |
@@ -32,9 +33,15 @@ Không cần cài đặt gì thêm — trình quét chỉ dùng thư viện chu�
 
 ## Trạng thái hiện tại
 
-Phiên 2026-08-24 **chưa quét được site**: công cụ WordPress MCP bị khóa sau gói
-Jetpack trả phí, và tường lửa mạng của phiên chặn tên miền. Chi tiết và cách xử
-lý nằm trong `docs/ACCESS.md`.
+Phiên 2026-08-24 **chưa quét được site**. Còn đúng một việc chặn:
 
-Bộ công cụ trong repo đã được kiểm thử end-to-end trên site giả lập có lỗi cài
-sẵn và bắt đúng toàn bộ, sẵn sàng chạy ngay khi có quyền truy cập.
+| Lớp chặn | Trạng thái |
+|---|---|
+| Quyền ghi WordPress | đã gỡ — dùng Application Password |
+| Tường lửa mạng của môi trường | **còn chặn** `giakelongquyen.com:443` |
+
+Chi tiết và cách xử lý nằm trong `docs/ACCESS.md`.
+
+Cả hai công cụ đã kiểm thử end-to-end: `audit.py` chạy trên site giả lập có lỗi
+cài sẵn và bắt đúng toàn bộ; `wp.py` chạy trên máy chủ REST giả lập, xác nhận
+đủ vòng ghi → sao lưu → hoàn tác. Sẵn sàng chạy ngay khi tên miền được mở.

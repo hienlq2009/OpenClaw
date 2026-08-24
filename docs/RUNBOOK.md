@@ -73,17 +73,46 @@ thường xuất phát từ template của theme, không phải từ nội dung 
 
 Mọi thay đổi nội dung lớn: lưu bản nháp, không xuất bản thẳng.
 
-### Ghi lại để hoàn tác
+### Công cụ sửa: `scripts/wp.py`
 
-Trước khi sửa một trang, lưu bản gốc:
+Nạp thông tin xác thực trước (xem `docs/ACCESS.md`):
 
 ```bash
-mkdir -p backups/$(date +%F)
-curl -sS https://giakelongquyen.com/<duong-dan> > backups/$(date +%F)/<ten-trang>.html
+export WP_BASE="https://giakelongquyen.com"
+export WP_USER="LongQuyenAuto"
+export WP_APP_PASSWORD="xxxx xxxx xxxx xxxx xxxx xxxx"
 ```
 
-Với nội dung sửa qua REST API, lưu lại `id` bài viết và nội dung cũ vào
-`backups/<ngày>/changes.json`.
+| Lệnh | Việc |
+|---|---|
+| `wp.py check` | Kiểm tra kết nối và quyền |
+| `wp.py seo-detect` | Nhận diện plugin SEO và các khóa meta đọc được |
+| `wp.py media-no-alt` | Liệt kê ảnh thiếu alt |
+| `wp.py set-alt --id N --alt "..."` | Đặt alt cho ảnh |
+| `wp.py find-link --url URL` | Tìm trang nào đang chứa một URL |
+| `wp.py replace-link --old A --new B` | Thay URL trong nội dung |
+| `wp.py backup --type all` | Sao lưu toàn bộ bài viết/trang |
+| `wp.py restore --file ...` | Hoàn tác từ bản sao lưu |
+
+### Ba lớp bảo vệ đã dựng sẵn
+
+1. **Mặc định chạy thử.** Mọi lệnh ghi đều chỉ in ra dự định. Phải thêm
+   `--apply` mới thực sự ghi lên site.
+2. **Sao lưu trước khi ghi.** Bản gốc lưu vào `backups/<ngày>/<loại>-<id>.json`
+   trước mỗi thao tác ghi.
+3. **Nhật ký thay đổi.** Mỗi thay đổi ghi một dòng vào
+   `backups/<ngày>/changes.jsonl` kèm giá trị cũ, giá trị mới và đường dẫn bản
+   sao lưu.
+
+Hoàn tác một thay đổi:
+
+```bash
+python3 scripts/wp.py restore --file backups/2026-08-24/post-11.json --apply
+```
+
+Công cụ **không có** lệnh xóa trang và **không có** lệnh đổi permalink — cố ý
+thiết kế như vậy để một lỗi thao tác không thể gây hậu quả không hồi phục
+được.
 
 ## Bước 4 — Tối ưu SEO + AIO/AEO
 
