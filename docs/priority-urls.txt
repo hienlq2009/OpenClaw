@@ -1,0 +1,23 @@
+# Danh sách trang ưu tiên quét mỗi phiên
+# Mỗi dòng một đường dẫn hoặc URL đầy đủ. Dòng bắt đầu bằng # bị bỏ qua.
+# Dùng: python3 scripts/audit.py --base https://giakelongquyen.com --paths docs/priority-urls.txt
+#
+# CHƯA ĐIỀN — phiên 2026-08-24 không truy cập được site nên chưa xác minh được
+# đường dẫn thật. Điền sau khi gỡ chặn, lấy từ menu chính và sitemap.xml.
+
+/
+
+# --- 10 trang sản phẩm chính ---
+# /ke-selective/
+# /ke-drive-in/
+# /ke-trung-tai/
+# /ke-sieu-thi/
+# /san-mezzanine/
+# (điền tiếp 5 trang còn lại theo sitemap thật)
+
+# --- 5 bài viết mới nhất ---
+# (lấy từ sitemap bài viết mỗi phiên)
+
+# --- Trang chuyển đổi ---
+# /lien-he/
+# /bao-gia/

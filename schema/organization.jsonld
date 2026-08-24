@@ -1,0 +1,43 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://giakelongquyen.com/#organization",
+      "name": "Công ty TNHH Sản xuất và Thương mại Long Quyền",
+      "alternateName": "Giá Kệ Long Quyền",
+      "url": "https://giakelongquyen.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{URL_LOGO}}",
+        "width": "{{LOGO_WIDTH}}",
+        "height": "{{LOGO_HEIGHT}}"
+      },
+      "foundingDate": "{{NAM_THANH_LAP}}",
+      "description": "{{MO_TA_CONG_TY_150_KY_TU}}",
+      "taxID": "{{MA_SO_THUE}}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{DIA_CHI_DUONG}}",
+        "addressLocality": "{{QUAN_HUYEN}}",
+        "addressRegion": "Hà Nội",
+        "postalCode": "{{MA_BUU_CHINH}}",
+        "addressCountry": "VN"
+      },
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "{{SDT_DANG_E164_VD_+84912345678}}",
+          "contactType": "sales",
+          "areaServed": "VN",
+          "availableLanguage": ["vi"]
+        }
+      ],
+      "sameAs": [
+        "{{URL_FACEBOOK}}",
+        "{{URL_YOUTUBE}}",
+        "{{URL_MANG_XA_HOI_KHAC}}"
+      ]
+    }
+  ]
+}

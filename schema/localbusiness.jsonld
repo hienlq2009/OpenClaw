@@ -1,0 +1,38 @@
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://giakelongquyen.com/#localbusiness",
+  "parentOrganization": { "@id": "https://giakelongquyen.com/#organization" },
+  "name": "Giá Kệ Long Quyền - Nhà máy sản xuất giá kệ kho hàng",
+  "image": "{{URL_ANH_NHA_MAY}}",
+  "url": "https://giakelongquyen.com/",
+  "telephone": "{{SDT_DANG_E164}}",
+  "priceRange": "{{KHOANG_GIA_VD_1000000-50000000_VND}}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{DIA_CHI_DUONG}}",
+    "addressLocality": "{{QUAN_HUYEN}}",
+    "addressRegion": "Hà Nội",
+    "addressCountry": "VN"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "{{VI_DO}}",
+    "longitude": "{{KINH_DO}}"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "{{GIO_MO_CUA_VD_08:00}}",
+      "closes": "{{GIO_DONG_CUA_VD_17:30}}"
+    }
+  ],
+  "areaServed": [
+    { "@type": "AdministrativeArea", "name": "Hà Nội" },
+    { "@type": "AdministrativeArea", "name": "Bắc Ninh" },
+    { "@type": "AdministrativeArea", "name": "Hưng Yên" },
+    { "@type": "AdministrativeArea", "name": "Hải Phòng" },
+    { "@type": "Country", "name": "Việt Nam" }
+  ]
+}

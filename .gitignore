@@ -1,0 +1,5 @@
+# Bản sao lưu nội dung site — có thể rất nặng, không đưa vào git
+backups/
+
+__pycache__/
+*.pyc

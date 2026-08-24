@@ -1,0 +1,35 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "@id": "{{URL_TRANG_SAN_PHAM}}#product",
+  "name": "{{TEN_SAN_PHAM_VD_Ke_Selective}}",
+  "image": ["{{URL_ANH_1}}", "{{URL_ANH_2}}"],
+  "description": "{{MO_TA_SAN_PHAM_150_KY_TU}}",
+  "sku": "{{MA_SAN_PHAM}}",
+  "brand": { "@type": "Brand", "name": "Long Quyền" },
+  "manufacturer": { "@id": "https://giakelongquyen.com/#organization" },
+  "category": "{{DANH_MUC_VD_Ke_kho_hang_cong_nghiep}}",
+  "material": "{{VAT_LIEU_LAY_TU_CATALOGUE}}",
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "Tải trọng mỗi tầng",
+      "value": "{{TAI_TRONG_KG_LAY_TU_CATALOGUE}}",
+      "unitCode": "KGM"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Chiều cao khung",
+      "value": "{{CHIEU_CAO_MM_LAY_TU_CATALOGUE}}",
+      "unitCode": "MMT"
+    }
+  ],
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "VND",
+    "lowPrice": "{{GIA_THAP_NHAT}}",
+    "highPrice": "{{GIA_CAO_NHAT}}",
+    "availability": "https://schema.org/InStock",
+    "seller": { "@id": "https://giakelongquyen.com/#organization" }
+  }
+}
